@@ -1,0 +1,284 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered citizen account profile stored in Firestore.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID matching the document ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Citizen full name.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified account email address.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "communityName": {
+          "type": "string",
+          "description": "Default neighborhood or civic community name.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "role": {
+          "type": "string",
+          "description": "User role; strictly locked to citizen on self-registration.",
+          "enum": ["citizen"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of account creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last profile update."
+        }
+      },
+      "required": ["uid", "fullName", "email", "communityName", "role", "createdAt", "updatedAt"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Trusted administrator directory record for RBAC enforcement.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the administrator.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Administrator email address.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Administrator display name.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "department": {
+          "type": "string",
+          "description": "Municipal department assignment.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "grantedBy": {
+          "type": "string",
+          "description": "UID of the administrator who granted access.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when admin access was granted."
+        }
+      },
+      "required": ["uid", "email", "fullName", "department", "grantedBy", "createdAt"]
+    },
+    "Complaint": {
+      "title": "Complaint",
+      "description": "Civic community issue report submitted by a verified citizen.",
+      "type": "object",
+      "properties": {
+        "referenceId": {
+          "type": "string",
+          "description": "Unique human-readable complaint tracking ID.",
+          "minLength": 16,
+          "maxLength": 16,
+          "pattern": "^CIRS-[0-9]{4}-[A-Z0-9]{6}$"
+        },
+        "citizenId": {
+          "type": "string",
+          "description": "UID of the citizen who submitted the complaint.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "citizenName": {
+          "type": "string",
+          "description": "Name of the reporting citizen.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "citizenEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Email of the reporting citizen.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "title": {
+          "type": "string",
+          "description": "Concise issue summary title.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "category": {
+          "type": "string",
+          "description": "Civic issue category.",
+          "enum": [
+            "Road & Potholes",
+            "Streetlights & Power",
+            "Water & Drainage",
+            "Waste & Sanitation",
+            "Parks & Trees",
+            "Public Safety",
+            "Noise & Nuisance",
+            "Other"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the community issue.",
+          "minLength": 15,
+          "maxLength": 2000
+        },
+        "location": {
+          "type": "string",
+          "description": "Street address, intersection, or landmark.",
+          "minLength": 3,
+          "maxLength": 180
+        },
+        "communityName": {
+          "type": "string",
+          "description": "Neighborhood, ward, or community name.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "status": {
+          "type": "string",
+          "description": "Current resolution lifecycle state.",
+          "enum": ["Pending", "In Progress", "Resolved"]
+        },
+        "adminRemarks": {
+          "type": "string",
+          "description": "Official remarks and resolution notes from municipal staff.",
+          "maxLength": 1000
+        },
+        "assignedDepartment": {
+          "type": "string",
+          "description": "Assigned municipal department handling the ticket.",
+          "maxLength": 100
+        },
+        "hasImage": {
+          "type": "boolean",
+          "description": "Whether an uploaded compressed image exists in complaintImages."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Optional external image URL.",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of complaint submission."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest update."
+        }
+      },
+      "required": [
+        "referenceId",
+        "citizenId",
+        "citizenName",
+        "citizenEmail",
+        "title",
+        "category",
+        "description",
+        "location",
+        "communityName",
+        "status",
+        "adminRemarks",
+        "assignedDepartment",
+        "hasImage",
+        "imageUrl",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ComplaintImage": {
+      "title": "ComplaintImage",
+      "description": "Compressed image attachment stored separately from complaint list documents.",
+      "type": "object",
+      "properties": {
+        "complaintId": {
+          "type": "string",
+          "description": "ID of the parent complaint document.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "citizenId": {
+          "type": "string",
+          "description": "UID of the citizen who uploaded the image.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "dataUrl": {
+          "type": "string",
+          "description": "Compressed base64 JPEG/WebP data URL under 350KB.",
+          "minLength": 20,
+          "maxLength": 350000,
+          "pattern": "^data:image/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Original sanitized file name.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "description": "Decoded payload size in bytes (max 262144)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of upload."
+        }
+      },
+      "required": ["complaintId", "citizenId", "dataUrl", "fileName", "sizeBytes", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Citizen profile records isolated to owner and admins."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Trusted administrator directory for RBAC checks."
+    },
+    "/complaints/{complaintId}": {
+      "schema": { "$ref": "#/entities/Complaint" },
+      "description": "Civic issue reports readable by the owning citizen or administrators."
+    },
+    "/complaintImages/{complaintId}": {
+      "schema": { "$ref": "#/entities/ComplaintImage" },
+      "description": "Optional compressed image attachments paired 1:1 with complaints."
+    }
+  }
+}
